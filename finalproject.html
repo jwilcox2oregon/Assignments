@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset='utf-8' />
+     <title>Chasing the triple-double record</title>
+     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js'></script>
+     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css' rel='stylesheet' />
+		
+     <!-- JS and CSS for the swipe plugin -->
+     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js'></script>
+     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css' type='text/css' />
+     
+     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+      <style>
+      body { margin:0; padding:0;overflow: hidden;}
+      body * {
+         -webkit-touch-callout: none;
+           -webkit-user-select: none;
+          -moz-user-select: none;
+           -ms-user-select: none;
+               user-select: none;
+          }
+          
+          #title { z-index: 9999; 
+         background-color:gray; 
+         opacity: 80%; 
+         text-align: center 
+     }
+		 
+      .map {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+          }
+          
+           /*  style for paragraph tags */
+        p {
+        color: white;
+        }
+
+         /* style for heading level 4 tags */
+        h4 {
+        color: white;
+        margin-left: 10px;
+        }
+
+       /*  style for items with the class "LegendContainer" */
+       .LegendContainer {
+         position: absolute;
+         bottom: 20px;
+         right: 20px;
+         z-index: 2;
+         width: 300px;
+         height: 40px;
+         background: rgba(80, 80, 80, .75);
+         transition: width 2s, height 2s; /* this is the time it takes for the container to transition */
+         border-radius: 7px;
+       }
+
+       /*  style for items with the class "descriptionPanel" */
+       .descriptionPanel {
+         position: absolute;
+         bottom: 65px;
+         right: 20px;
+         z-index: 2;
+         width: 300px;
+         height: 40px;
+         background: rgba(80, 80, 80, .75);
+         transition: width 2s, height 2s;
+         overflow: hidden;
+         border-radius: 7px;
+       }
+          
+          /*  style for items with the class "rankingPanel" */
+       .rankingPanel {
+         position: absolute;
+         bottom: 65px;
+         left: 20px;
+         z-index: 2;
+         width: 200px;
+         height: 40px;
+         background: rgba(80, 80, 80, .75);
+         transition: width 2s, height 2s;
+         overflow: hidden;
+         border-radius: 7px;
+       }
+
+       /*  style for items with the class "descriptionPanel" when active */
+       .LegendContainer:active {
+         width: 240px;
+         height: 250px;
+       }
+
+       /* style for items with the class "legendItem" */
+       .legendItem {
+           margin: 0px;
+           padding-left: 10px;
+           display:inline-block;
+           margin:auto;
+           transform: translate(50%, 50%);
+       }
+
+
+       /* style for items with the class "layerDescription" */
+       .layerDescription {
+         color: white;
+         padding-left: 10px;
+       }
+
+.westbrook {
+             color:red;
+       }
+       .jokic{
+             color:yellow;
+       }
+       /* style for items with the class "chevron" */
+       .chevron {
+         position: relative;
+         margin-left: 45%;
+         font-size: x-large;
+         color: white;
+       }
+             body { margin:0; padding:0; }
+             #map { position:absolute; top:0; bottom:0; width:100%; }
+      </style>
+ </head>
+ <body>
+     <!-- map ranking panel -->
+        <div class="rankingPanel" id="rankingPanel" style="height: 150px;">
+        <h4>THE RECORD LIST</h4>
+        <p style="margin-left: 10px; margin-right: 10px;">
+          1- Russell Westbrook (199)<br />
+            2- Oscar Robertson (181)<br />
+            3- Magic Johnson (138)<br />
+            4- Nikola Jokic (130)<br />
+            5- Lebron James (112)
+            </p>
+        </div>
+     
+       <!-- map description panel -->
+        <div class="descriptionPanel" id="descriptionPanel" style="height: 350px;">
+        <span onClick=panelSelect() id="glyph" class="chevron glyphicon glyphicon-chevron-down"></span>
+        <hr/>
+        <h4>CHASING THE TRIPLE-DOUBLE RECORD</h4>
+        <p style="margin-left: 10px; margin-right: 10px;">
+           At the end of the 2023-2024 season, Russell Westbrook held the record for most career NBA triple-doubles and has neared the end of his career. Nikola Jokic is still in the prime of his career and is on pace to surpass Westbrook's career total.
+            </p>
+            <hr />
+         <p style="margin-left: 10px; margin-right: 10px;">
+            Map by Jason Wilcox <br />
+            Data sources: Statmuse.com, nba.com<br />
+        </p>
+        </div>
+      
+     <!-- map legend -->
+     <div class="LegendContainer">
+     <div class="legendItem">
+         <span class="jokic">&#11044;</span>
+         <span class="layerDescription">Jokic</span>
+     </div>
+     <div class="legendItem">
+         <span class="westbrook">&#11044;</span>
+         <span class="layerDescription">Westbrook</span>
+     </div>
+     </div>
+     
+     <div id="comparison-container">
+      	<div id='jokic' class='map'></div> <!--  div for jokic map div -->	
+         <div id='westbrook' class='map'></div>  <!-- div for westbrook map div -->
+  		</div>
+     
+     <!--  Title div here -->
+      <div id='title'>
+     		<h1>Triple-doubles by location</h1>
+          <h2><span class="jokic">Nikola Jokic</span> and <span class="westbrook">Russell Westbrook</span></h2>
+ 	</div>
+
+     <script>
+       //add your Mapbox access token and map variable here!
+         mapboxgl.accessToken = 'pk.eyJ1IjoiandpbGNveDJvcmVnb24iLCJhIjoiY2x1dGdqcDg0MG0wODJsb2lycXFqYXd4biJ9.Bw_3M6eemyEd2pfvSIjDLg';
+        var westbrookMap = new mapboxgl.Map({
+             container: 'westbrook', // westbrook map div 
+             style: 'mapbox://styles/mapbox/dark-v10', // Mapbox dark style 
+             center: [-96.30425243583213, 37.80663569201022], 
+             zoom: 4.5
+         });
+         
+                 
+         westbrookMap.on('load', function() {
+           // the rest of the owner data code will go in here
+            westbrookMap.addLayer({
+                id: 'Westbrook Data',
+                type: "circle",
+                  source: {
+                    type: 'vector',
+                    url: 'mapbox://jwilcox2oregon.clwjkrw256p9y1nnu0nsxk10n-0tny4'  //input your tileset ID url 
+                  },
+                    'source-layer': 'nbacities', //input your source layer name e.g. 'Owner-Renter-Pop-ca08iw'
+                  paint: {
+                    'circle-color': 'red',
+                  }
+
+                });
+             });
+         
+        var jokicMap = new mapboxgl.Map({
+            container: 'jokic', // jokic map div 
+            style: 'mapbox://styles/mapbox/dark-v10', 
+            center: [-96.30425243583213, 37.80663569201022], // Use the same center as the other map so that they are perfectly aligned
+            zoom: 4.5
+        });     
+        
+         jokicMap.on('load', function() {
+           // the rest of the owner data code will go in here
+            jokicMap.addLayer({
+            id: 'Jokic Data',
+            type: "circle",
+              source: {
+                type: 'vector',
+                url: 'mapbox://jwilcox2oregon.clwjkrw256p9y1nnu0nsxk10n-0tny4'  //input your tileset ID url e.g. 'mapbox://jomerson.6ykhlovc' 
+              },
+                'source-layer': 'nbacities', //input your source layer name e.g. 'Owner-Renter-Pop-ca08iw'
+              paint: {
+                'circle-color': 'yellow',
+              }
+
+            });
+         });
+         
+         // A selector or reference to HTML element
+        var container = '#comparison-container';
+
+        var map = new mapboxgl.Compare(jokicMap, westbrookMap, container, {
+            
+        })     
+         // Add zoom and rotation controls to the map.
+        jokicMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+         
+         // Add zoom and rotation controls to the map.
+        westbrookMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+       
+       // legend interaction
+       var state = { panelOpen: true };
+
+       function panelSelect(e){
+        if(state.panelOpen){
+          document.getElementById('descriptionPanel').style.height = '26px';
+          document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-up";
+          state.panelOpen = false;
+        } else {
+          document.getElementById('descriptionPanel').style.height = '250px';
+          document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-down";
+          state.panelOpen = true;
+        }
+      }
+         
+         /***  POPUPS Jokic  ***/
+            // Popup for Portland  
+ var popupPorj_content = '<h3>Portland Trailblazers</h3>';
+popupPorj_content += 'Triple-doubles at Portland: 1<br>';
+         popupPorj_content += 'Current arena: Moda Center<br>';
+        popupPorj_content += 'Neato fact or vid or pic';
+        
+ var popupPorj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPorj_content);
+       
+ // Popup for Sacremento  
+ var popupSacj_content = '<h3>Sacremento Kings</h3>';
+        popupSacj_content += 'Triple-doubles at Sacremento: 2<br>';
+        popupSacj_content += 'Current arena: Golden 1 Center<br>';
+         popupSacj_content += 'Neato fact or vid or pic';
+                 
+ var popupSacj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupSacj_content);
+
+    
+ // Popup for marker Golden State  
+ var popupGsj_content = '<h3>Golden State Warriors</h3>';
+        popupGsj_content += 'Triple-doubles at Golden State: 3<br>';
+          popupGsj_content += 'Current arena: Chase Center<br>';
+        popupGsj_content += 'Neato fact or vid or pic';
+         
+ var popupGsj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupGsj_content);
+         
+          // Popup for marker Los Angeles L  
+ var popupLalj_content = '<h3>Los Angeles Lakers</h3>';
+        popupLalj_content += 'Triple-doubles at Lakers: 0<br>';
+         popupLalj_content += 'Current arena: Crypto.com Arena<br>';
+        popupLalj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupLalj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupLalj_content);
+         
+          // Popup for marker Los Angeles C  
+ var popupLacj_content = '<h3>Los Angeles Clippers</h3>';
+        popupLacj_content += 'Triple-doubles at Clippers: 3<br>';
+         popupLacj_content += 'Current arena: Intuit Dome<br>';
+        popupLacj_content += 'Neato fact or vid or pic';
+         
+ var popupLacj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupLacj_content);
+         
+           // Popup for marker Phoenix  
+ var popupPhoj_content = '<h3>Phoenix Suns</h3>';
+        popupPhoj_content += 'Triple-doubles at Phoenix: 1<br>';
+         popupPhoj_content += 'Current arena: Footprint Center<br>';
+        popupPhoj_content += 'Neato fact or vid or pic';
+         
+ var popupPhoj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPhoj_content);
+         
+          // Popup for marker Utah  
+ var popupUtahj_content = '<h3>Utah Jazz</h3>';
+        popupUtahj_content += 'Triple-doubles at Utah: 1<br>';
+         popupUtahj_content += 'Current arena: Delta Center<br>';
+        popupUtahj_content += 'Neato fact or vid or pic';
+         
+ var popupUtahj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupUtahj_content);
+         
+          // Popup for marker Denver  
+ var popupDenj_content = '<h3>Denver Nuggets</h3>';
+        popupDenj_content += 'Triple-doubles at Denver: 83<br>';
+         popupDenj_content += 'Current arena: Ball Arena<br>';
+        popupDenj_content += 'This is the highest number of triple-doubles by any player in one arena.';
+         
+ var popupDenj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDenj_content);
+         
+         // Popup for marker Oklahoma City  
+ var popupOkcj_content = '<h3>Oklahoma City Thunder</h3>';
+        popupOkcj_content += 'Triple-doubles at Oklahoma City: 3 <br>';
+         popupOkcj_content += 'Current arena: Paycom Center<br>';
+        popupOkcj_content += 'One of the triple-doubles was recorded in the Bubble during the Covid season.';
+         
+ var popupOkcj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupOkcj_content);
+         
+         // Popup for marker Dallas  
+ var popupDalj_content = '<h3>Dallas Mavericks</h3>';
+        popupDalj_content += 'Triple-doubles at Dallas: 0<br>';
+         popupDalj_content += 'Current arena: American Airlines Center<br>';
+        popupDalj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupDalj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDalj_content);
+         
+         // Popup for marker San Antonio  
+ var popupSasj_content = '<h3>San Antonio Spurs</h3>';
+        popupSasj_content += 'Triple-doubles at San Antonio: 2<br>';
+         popupSasj_content += 'Current arena: Frost Bank Center<br>';
+        popupSasj_content += 'Neato fact or vid or pic';
+         
+ var popupSasj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupSasj_content);
+         
+         // Popup for marker Houston  
+ var popupHouj_content = '<h3>Houston Rockets</h3>';
+        popupHouj_content += 'Triple-doubles at Houston: 3<br>';
+         popupHouj_content += 'Current arena: Toyota Center<br>';
+        popupHouj_content += 'Neato fact or vid or pic';
+         
+ var popupHouj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupHouj_content);
+         
+         // Popup for marker New Orleans  
+ var popupNopj_content = '<h3>New Orleans Pelicans</h3>';
+        popupNopj_content += 'Triple-doubles at New Orleans: 5<br>';
+         popupNopj_content += 'Current arena: Smoothie King Center<br>';
+        popupNopj_content += 'Against New Orleans is the most Nikola Jokic has as an away player';
+         
+ var popupNopj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupNopj_content);
+         
+         // Popup for marker Memphis
+ var popupMemj_content = '<h3>Memphis Grizzlies</h3>';
+        popupMemj_content += 'Triple-doubles at Memphis: 0<br>';
+         popupMemj_content += 'Current arena: FedEx Forum<br>';
+        popupMemj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupMemj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMemj_content);
+
+         // Popup for marker Minnesota
+ var popupMinj_content = '<h3>Minnesota Timberwolves</h3>';
+        popupMinj_content += 'Triple-doubles at Minnesota: 2<br>';
+         popupMinj_content += 'Current arena: Target Center<br>';
+        popupMinj_content += 'Neato fact or vid or pic';
+         
+ var popupMinj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMinj_content);
+         
+         // Popup for marker Milwaukee
+ var popupMilj_content = '<h3>Milwaukee Bucks</h3>';
+        popupMilj_content += 'Triple-doubles at Milwaukee: 3<br>';
+         popupMilj_content += 'Current arena: Fiserv Forum<br>';
+        popupMilj_content += 'Neato fact or vid or pic';
+         
+ var popupMilj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMilj_content);
+         
+         // Popup for marker Chicago
+ var popupChij_content = '<h3>Chicago Bulls</h3>';
+        popupChij_content += 'Triple-doubles at Chicago: 2<br>';
+         popupChij_content += 'Current arena: United Center<br>';
+        popupChij_content += 'Neato fact or vid or pic';
+         
+ var popupChij = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupChij_content);
+         
+         // Popup for marker Indiana
+ var popupIndj_content = '<h3>Indiana Pacers</h3>';
+        popupIndj_content += 'Triple-doubles at Indiana: 1<br>';
+         popupIndj_content += 'Current arena: Gainbridge Fieldhouse<br>';
+        popupIndj_content += 'Neato fact or vid or pic';
+         
+ var popupIndj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupIndj_content);
+         
+         // Popup for marker Detroit
+ var popupDetj_content = '<h3>Detroit Pistons</h3>';
+        popupDetj_content += 'Triple-doubles at Detroit: 2<br>';
+         popupDetj_content += 'Current arena: Little Caesars Arena<br>';
+        popupDetj_content += 'Neato fact or vid or pic';
+         
+ var popupDetj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDetj_content);
+         
+         // Popup for marker Cleveland
+ var popupClej_content = '<h3>Cleveland Cavaliers</h3>';
+        popupClej_content += 'Triple-doubles at Cleveland: 2<br>';
+         popupClej_content += 'Current arena: Rocket Mortgage FieldHouse<br>';
+        popupClej_content += 'Neato fact or vid or pic';
+         
+ var popupClej = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupClej_content);
+         
+         // Popup for marker Toronto
+ var popupTorj_content = '<h3>Toronto Raptors</h3>';
+        popupTorj_content += 'Triple-doubles at Toronto: 1<br>';
+         popupTorj_content += 'Current arena: Scotiabank Arena<br>';
+        popupTorj_content += 'Neato fact or vid or pic';
+         
+ var popupTorj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupTorj_content);
+         
+          // Popup for marker Boston
+ var popupBosj_content = '<h3>Boston Celtics</h3>';
+        popupBosj_content += 'Triple-doubles at Boston: 1<br>';
+         popupBosj_content += 'Current arena: TD Garden<br>';
+        popupBosj_content += 'Neato fact or vid or pic';
+         
+ var popupBosj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupBosj_content);
+         
+         // Popup for marker New York
+ var popupNykj_content = '<h3>New York Knicks</h3>';
+        popupNykj_content += 'Triple-doubles at New York: 0<br>';
+         popupNykj_content += 'Current arena: Madison Square Garden<br>';
+        popupNykj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupNykj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupNykj_content);
+         
+         // Popup for marker Brooklyn
+ var popupBrnj_content = '<h3>Brooklyn Nets</h3>';
+        popupBrnj_content += 'Triple-doubles at Brooklyn: 2<br>';
+         popupBrnj_content += 'Current arena: Barclays Arena<br>';
+        popupBrnj_content += 'Neato fact or vid or pic';
+         
+ var popupBrnj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupBrnj_content);
+         
+         // Popup for marker Philadelphia
+ var popupPhij_content = '<h3>Philadelphia 76ers</h3>';
+        popupPhij_content += 'Triple-doubles at Philadelphia: 1<br>';
+         popupPhij_content += 'Current arena: Wells Fargo Center<br>';
+        popupPhij_content += 'Neato fact or vid or pic';
+         
+ var popupPhij = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPhij_content);
+         
+         // Popup for marker Washington
+ var popupWasj_content = '<h3>Washington Wizards</h3>';
+        popupWasj_content += 'Triple-doubles at Washington: 0<br>';
+         popupWasj_content += 'Current arena: Capital One Arena<br>';
+        popupWasj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupWasj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupWasj_content);
+         
+         // Popup for marker Charlotte
+ var popupChaj_content = '<h3>Charlotte Hornets</h3>';
+        popupChaj_content += 'Triple-doubles at Charlotte: 3<br>';
+         popupChaj_content += 'Current arena: Specturm Center<br>';
+        popupChaj_content += 'Neato fact or vid or pic';
+         
+ var popupChaj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupChaj_content);
+         
+         // Popup for marker Atlanta
+ var popupAtlj_content = '<h3>Atlanta Hawks</h3>';
+        popupAtlj_content += 'Triple-doubles at Atlanta: 0<br>';
+         popupAtlj_content += 'Current arena: State Farm Arena<br>';
+        popupAtlj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+         
+ var popupAtlj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupAtlj_content);
+         
+         // Popup for marker Orlando
+ var popupOrlj_content = '<h3>Orlando Magic</h3>';
+        popupOrlj_content += 'Triple-doubles at Orlando: 2<br>';
+         popupOrlj_content += 'Current arena: Kia Center<br>';
+        popupOrlj_content += 'Neato fact or vid or pic';
+         
+ var popupOrlj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupOrlj_content);
+         
+          // Popup for marker Miami
+ var popupMiaj_content = '<h3>Miami Heat</h3>';
+        popupMiaj_content += 'Triple-doubles at Miami: 1<br>';
+         popupMiaj_content += 'Current arena: Kaseya Center<br>';
+        popupMiaj_content += 'Neato fact or vid or pic';
+         
+ var popupMiaj = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMiaj_content);
+        /***  END POPUPS Jokic ***/
+         
+           /***  POPUPS Westbrook  ***/
+            // Popup for Portland  
+ var popupPor_content = '<h3>Portland Trailblazers</h3>';
+popupPor_content += 'Triple-doubles at Portland: 3<br>';
+         popupPor_content += 'Current arena: Moda Center<br>';
+        popupPor_content += 'Neato fact or vid or pic';
+        
+ var popupPor = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPor_content);
+       
+ // Popup for Sacremento  
+ var popupSac_content = '<h3>Sacremento Kings</h3>';
+        popupSac_content += 'Triple-doubles at Sacremento: 5<br>';
+        popupSac_content += 'Current arena: Golden 1 Center<br>';
+         popupSac_content += 'Neato fact or vid or pic';
+                 
+ var popupSac = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupSac_content);
+
+    
+ // Popup for marker Golden State  
+ var popupGs_content = '<h3>Golden State Warriors</h3>';
+        popupGs_content += 'Triple-doubles at Golden State: 3<br>';
+          popupGs_content += 'Current arena: Chase Center<br>';
+        popupGs_content += 'Neato fact or vid or pic';
+         
+ var popupGs = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupGs_content);
+         
+          // Popup for marker Los Angeles L  
+ var popupLal_content = '<h3>Los Angeles Lakers</h3>';
+        popupLal_content += 'Triple-doubles at Lakers: 1<br>';
+          popupLal_content += 'Triple-doubles for Lakers: 7<br>';
+         popupLal_content += 'Current arena: Crypto.com Arena<br>';
+        popupLal_content += 'Neato fact or vid or pic';
+         
+ var popupLal = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupLal_content);
+         
+          // Popup for marker Los Angeles C  
+ var popupLac_content = '<h3>Los Angeles Clippers</h3>';
+        popupLac_content += 'Triple-doubles at Clippers: 1<br>';
+         popupLac_content += 'Triple-doubles for Clippers: 0<br>';
+         popupLac_content += 'Current arena: Intuit Dome<br>';
+        popupLac_content += 'Neato fact or vid or pic';
+         
+ var popupLac = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupLac_content);
+         
+           // Popup for marker Phoenix  
+ var popupPho_content = '<h3>Phoenix Suns</h3>';
+        popupPho_content += 'Triple-doubles at Phoenix: 4<br>';
+         popupPho_content += 'Current arena: Footprint Center<br>';
+        popupPho_content += 'Neato fact or vid or pic';
+         
+ var popupPho = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPho_content);
+         
+          // Popup for marker Utah  
+ var popupUtah_content = '<h3>Utah Jazz</h3>';
+        popupUtah_content += 'Triple-doubles at Utah: 3<br>';
+         popupUtah_content += 'Current arena: Delta Center<br>';
+        popupUtah_content += 'Neato fact or vid or pic';
+         
+ var popupUtah = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupUtah_content);
+         
+          // Popup for marker Denver  
+ var popupDen_content = '<h3>Denver Nuggets</h3>';
+        popupDen_content += 'Triple-doubles at Denver: 4<br>';
+         popupDen_content += 'Current arena: Ball Arena<br>';
+        popupDen_content += 'Neato fact or vid or pic';
+         
+ var popupDen = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDen_content);
+         
+         // Popup for marker Oklahoma City  
+ var popupOkc_content = '<h3>Oklahoma City Thunder</h3>';
+        popupOkc_content += 'Triple-doubles at Oklahoma City: 2<br>';
+         popupOkc_content += 'Triple-doubles for Oklahoma City: 77<br>';
+         popupOkc_content += 'Current arena: Paycom Center<br>';
+        popupOkc_content += 'This is the 2nd highest total any player has ever recorded in one arena';
+         
+ var popupOkc = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupOkc_content);
+         
+         // Popup for marker Dallas  
+ var popupDal_content = '<h3>Dallas Mavericks</h3>';
+        popupDal_content += 'Triple-doubles at Dallas: 1<br>';
+         popupDal_content += 'Current arena: American Airlines Center<br>';
+        popupDal_content += 'Neato fact or vid or pic';
+         
+ var popupDal = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDal_content);
+         
+         // Popup for marker San Antonio  
+ var popupSas_content = '<h3>San Antonio Spurs</h3>';
+        popupSas_content += 'Triple-doubles at San Antonio: 2<br>';
+         popupSas_content += 'Current arena: Frost Bank Center<br>';
+        popupSas_content += 'Neato fact or vid or pic';
+         
+ var popupSas = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupSas_content);
+         
+         // Popup for marker Houston  
+ var popupHou_content = '<h3>Houston Rockets</h3>';
+        popupHou_content += 'Triple-doubles at Houston: 3<br>';
+         popupHou_content += 'Triple-doubles for Houston: 5<br>';
+         popupHou_content += 'Current arena: Toyota Center<br>';
+        popupHou_content += 'Neato fact or vid or pic';
+         
+ var popupHou = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupHou_content);
+         
+         // Popup for marker New Orleans  
+ var popupNop_content = '<h3>New Orleans Pelicans</h3>';
+        popupNop_content += 'Triple-doubles at New Orleans: 3<br>';
+         popupNop_content += 'Current arena: Smoothie King Center<br>';
+        popupNop_content += 'Neato fact or vid or pic';
+         
+ var popupNop = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupNop_content);
+         
+         // Popup for marker Memphis
+ var popupMem_content = '<h3>Memphis Grizzlies</h3>';
+        popupMem_content += 'Triple-doubles at Memphis: 3<br>';
+         popupMem_content += 'Current arena: FedEx Forum<br>';
+        popupMem_content += 'Neato fact or vid or pic';
+         
+ var popupMem = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMem_content);
+
+         // Popup for marker Minnesota
+ var popupMin_content = '<h3>Minnesota Timberwolves</h3>';
+        popupMin_content += 'Triple-doubles at Minnesota: 3<br>';
+         popupMin_content += 'Current arena: Target Center<br>';
+        popupMin_content += 'Neato fact or vid or pic';
+         
+ var popupMin = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMin_content);
+         
+         // Popup for marker Milwaukee
+ var popupMil_content = '<h3>Milwaukee Bucks</h3>';
+        popupMil_content += 'Triple-doubles at Milwaukee: 5<br>';
+         popupMil_content += 'Current arena: Fiserv Forum<br>';
+        popupMil_content += 'Neato fact or vid or pic';
+         
+ var popupMil = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMil_content);
+         
+         // Popup for marker Chicago
+ var popupChi_content = '<h3>Chicago Bulls</h3>';
+        popupChi_content += 'Triple-doubles at Chicago: 2<br>';
+         popupChi_content += 'Current arena: United Center<br>';
+        popupChi_content += 'Neato fact or vid or pic';
+         
+ var popupChi = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupChi_content);
+         
+         // Popup for marker Indiana
+ var popupInd_content = '<h3>Indiana Pacers</h3>';
+        popupInd_content += 'Triple-doubles at Indiana: 4<br>';
+         popupInd_content += 'Current arena: Gainbridge Fieldhouse<br>';
+        popupInd_content += 'Neato fact or vid or pic';
+         
+ var popupInd = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupInd_content);
+         
+         // Popup for marker Detroit
+ var popupDet_content = '<h3>Detroit Pistons</h3>';
+        popupDet_content += 'Triple-doubles at Detroit: 2<br>';
+         popupDet_content += 'Current arena: Little Caesars Arena<br>';
+        popupDet_content += 'Neato fact or vid or pic';
+         
+ var popupDet = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupDet_content);
+         
+         // Popup for marker Cleveland
+ var popupCle_content = '<h3>Cleveland Cavaliers</h3>';
+        popupCle_content += 'Triple-doubles at Cleveland: 2<br>';
+         popupCle_content += 'Current arena: Rocket Mortgage FieldHouse<br>';
+        popupCle_content += 'Neato fact or vid or pic';
+         
+ var popupCle = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupCle_content);
+         
+         // Popup for marker Toronto
+ var popupTor_content = '<h3>Toronto Raptors</h3>';
+        popupTor_content += 'Triple-doubles at Toronto: 8<br>';
+         popupTor_content += 'Current arena: Scotiabank Arena<br>';
+        popupTor_content += 'This is the most triple-doubles Westbrook has against a team as a visiting player.';
+         
+ var popupTor = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupTor_content);
+         
+          // Popup for marker Boston
+ var popupBos_content = '<h3>Boston Celtics</h3>';
+        popupBos_content += 'Triple-doubles at Boston: 2<br>';
+         popupBos_content += 'Current arena: TD Garden<br>';
+        popupBos_content += 'Neato fact or vid or pic';
+         
+ var popupBos = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupBos_content);
+         
+         // Popup for marker New York
+ var popupNyk_content = '<h3>New York Knicks</h3>';
+        popupNyk_content += 'Triple-doubles at New York: 3<br>';
+         popupNyk_content += 'Current arena: Madison Square Garden<br>';
+        popupNyk_content += 'Neato fact or vid or pic';
+         
+ var popupNyk = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupNyk_content);
+         
+         // Popup for marker Brooklyn
+ var popupBrn_content = '<h3>Brooklyn Nets</h3>';
+        popupBrn_content += 'Triple-doubles at Brooklyn: 3<br>';
+         popupBrn_content += 'Current arena: Barclays Arena<br>';
+        popupBrn_content += 'Neato fact or vid or pic';
+         
+ var popupBrn = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupBrn_content);
+         
+         // Popup for marker Philadelphia
+ var popupPhi_content = '<h3>Philadelphia 76ers</h3>';
+        popupPhi_content += 'Triple-doubles at Philadelphia: 4<br>';
+         popupPhi_content += 'Current arena: Wells Fargo Center<br>';
+        popupPhi_content += 'Neato fact or vid or pic';
+         
+ var popupPhi = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupPhi_content);
+         
+         // Popup for marker Washington
+ var popupWas_content = '<h3>Washington Wizards</h3>';
+        popupWas_content += 'Triple-doubles at Washington: 2<br>';
+         popupWas_content += 'Triple-doubles for Washington: 21<br>';
+         popupWas_content += 'Current arena: Capital One Arena<br>';
+        popupWas_content += 'Neato fact or vid or pic';
+         
+ var popupWas = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupWas_content);
+         
+         // Popup for marker Charlotte
+ var popupCha_content = '<h3>Charlotte Hornets</h3>';
+        popupCha_content += 'Triple-doubles at Charlotte: 0<br>';
+         popupCha_content += 'Current arena: Specturm Center<br>';
+        popupCha_content += 'This is the only team Westbrook has not recorded a triple-double as a visitor.';
+         
+ var popupCha = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupCha_content);
+         
+         // Popup for marker Atlanta
+ var popupAtl_content = '<h3>Atlanta Hawks</h3>';
+        popupAtl_content += 'Triple-doubles at Atlanta: 4<br>';
+         popupAtl_content += 'Current arena: State Farm Arena<br>';
+         popupAtl_content +='<strong>Watch Westbrook set the all-time record for triple-doubles:</strong><br>';
+        popupAtl_content += '<iframe width="300" height="315" src="https://www.youtube.com/embed/b4u0Ghi-AQA?si=eeKXYPvlusdHD9kT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+         popupAtl_content += 'Source: House of Highlights, <a href="https://www.youtube.com/watch?v=b4u0Ghi-AQA">Youtube</a>';
+         
+ var popupAtl = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupAtl_content);
+         
+         // Popup for marker Orlando
+ var popupOrl_content = '<h3>Orlando Magic</h3>';
+        popupOrl_content += 'Triple-doubles at Orlando: 4<br>';
+         popupOrl_content += 'Current arena: Kia Center<br>';
+        popupOrl_content += 'Neato fact or vid or pic';
+         
+ var popupOrl = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupOrl_content);
+         
+          // Popup for marker Miami
+ var popupMia_content = '<h3>Miami Heat</h3>';
+        popupMia_content += 'Triple-doubles at Miami: 3<br>';
+         popupMia_content += 'Current arena: Kaseya Center<br>';
+        popupMia_content += 'Neato fact or vid or pic';
+         
+ var popupMia = new mapboxgl.Popup({ minWidth:'300px' })
+     .setHTML(popupMia_content);
+        /***  END POPUPS Westbrook ***/  
+         
+         /***  MARKERS Jokic ***/
+            // Marker - Portland
+     var markerPorj = new mapboxgl.Marker({color:'Gold'})
+        .setLngLat([-122.6668,45.5316]) // Portland 
+	    .setPopup(popupPorj) 
+        .addTo(jokicMap);
+
+        
+    // Marker - Sacremento 
+    var markerSacj= new mapboxgl.Marker({color:'Gold'})
+       .setLngLat([-121.4996,38.5801]) // Sacremento
+       .setPopup(popupSacj) 
+       .addTo(jokicMap);
+
+        
+    // Marker - Golden State
+    var markerGsj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-122.3874,37.7678]) // Golden State
+      .setPopup(popupGsj) 
+      .addTo(jokicMap);
+         
+         // Marker - Los Angeles L
+    var markerLalj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-118.2672,34.0431]) // Los Angeles L
+      .setPopup(popupLalj) 
+      .addTo(jokicMap);
+         
+         // Marker - Los Angeles C
+    var markerLacj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-118.3421,33.9438]) // Los Angeles C
+      .setPopup(popupLacj) 
+      .addTo(jokicMap);
+         
+          // Marker - Phoenix
+    var markerPhoj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-112.0712,33.4458]) // Phoenix
+      .setPopup(popupPhoj) 
+      .addTo(jokicMap);
+         
+         // Marker - Utah
+    var markerUtahj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-111.9012,40.7683]) // Utah
+      .setPopup(popupUtahj) 
+      .addTo(jokicMap);
+         
+         // Marker - Denver
+    var markerDenj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-105.0076,39.7487]) // Denver
+      .setPopup(popupDenj) 
+      .addTo(jokicMap);
+         
+         // Marker - Oklahoma City
+    var markerOkcj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-97.5152,35.4635]) // Oklahoma City
+      .setPopup(popupOkcj) 
+      .addTo(jokicMap);
+
+         // Marker - Dallas
+    var markerDalj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-96.8099,32.7902]) // Dallas
+      .setPopup(popupDalj) 
+      .addTo(jokicMap);
+         
+          // Marker - San Antonio
+    var markerSasj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-98.4374,29.4270]) // San Antonio
+      .setPopup(popupSasj) 
+      .addTo(jokicMap);
+         
+          // Marker - Houston
+    var markerHouj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-95.3621,29.7509]) // Houston
+      .setPopup(popupHouj) 
+      .addTo(jokicMap);
+         
+          // Marker - New Orleans
+    var markerNopj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-90.0818,29.9490]) // New Orleans
+      .setPopup(popupNopj) 
+      .addTo(jokicMap);
+         
+         // Marker - Memphis
+    var markerMemj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-90.0505,35.1382]) // Memphis
+      .setPopup(popupMemj) 
+      .addTo(jokicMap);
+         
+         // Marker - Minnesota
+    var markerMinj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-93.2760,44.9795]) // Minnesota
+      .setPopup(popupMinj) 
+      .addTo(jokicMap);
+         
+         // Marker - Milwaukee
+    var markerMilj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-87.9173,43.0450]) // Milwaukee
+      .setPopup(popupMilj) 
+      .addTo(jokicMap);
+         
+         // Marker - Chicago
+    var markerChij = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-87.6742,41.8805]) // Chicago
+      .setPopup(popupChij) 
+      .addTo(jokicMap);
+         
+         // Marker - Indiana
+    var markerIndj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-86.1555,39.7640]) // Indiana
+      .setPopup(popupIndj) 
+      .addTo(jokicMap);
+         
+         // Marker - Detroit
+    var markerDetj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-83.0551,42.3411]) // Detroit
+      .setPopup(popupDetj) 
+      .addTo(jokicMap);
+         
+         // Marker - Cleveland
+    var markerClej = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-81.6882,41.4968]) // Cleveland
+      .setPopup(popupClej) 
+      .addTo(jokicMap);
+         
+         // Marker - Toronto
+    var markerTorj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-79.3790,43.6434]) // Toronto
+      .setPopup(popupTorj) 
+      .addTo(jokicMap);
+         
+         // Marker - Boston
+    var markerBosj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-71.0622,42.3663]) // Boston
+      .setPopup(popupBosj) 
+      .addTo(jokicMap);
+         
+         // Marker - New York
+    var markerNykj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-73.9934,40.7506]) // New York
+      .setPopup(popupNykj) 
+      .addTo(jokicMap);
+         
+         // Marker - Brooklyn
+    var markerBrnj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-73.9752,40.6827]) // Brooklyn
+      .setPopup(popupBrnj) 
+      .addTo(jokicMap);
+         
+         // Marker - Philadelphia
+    var markerPhij = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-75.1720,39.9010]) // Philadelphia
+      .setPopup(popupPhij) 
+      .addTo(jokicMap);
+         
+         // Marker - Washington
+    var markerWasj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-77.0209,38.8981]) // Washington
+      .setPopup(popupWasj) 
+      .addTo(jokicMap);
+         
+         // Marker - Charlotte
+    var markerChaj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-80.8393,35.2251]) // Charlotte
+      .setPopup(popupChaj) 
+      .addTo(jokicMap);
+         
+         // Marker - Atlanta
+    var markerAtlj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-84.3964,33.7574]) // Atlanta
+      .setPopup(popupAtlj) 
+      .addTo(jokicMap);
+         
+         // Marker - Orlando
+    var markerOrlj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-81.3838,28.5393]) // Orlando
+      .setPopup(popupOrlj) 
+      .addTo(jokicMap);
+         
+         // Marker - Miami
+    var markerMiaj = new mapboxgl.Marker({color:'Gold'})
+      .setLngLat([-80.1879,25.7814]) // Miami
+      .setPopup(popupMiaj) 
+      .addTo(jokicMap);
+        /***  END MARKERS Jokic  ***/
+         
+         /***  MARKERS Westbrook ***/
+            // Marker - Portland
+     var markerPor = new mapboxgl.Marker({color:'DarkRed'})
+        .setLngLat([-122.6668,45.5316]) // Portland 
+	    .setPopup(popupPor) 
+        .addTo(westbrookMap);
+
+        
+    // Marker - Sacremento 
+    var markerSac= new mapboxgl.Marker({color:'DarkRed'})
+       .setLngLat([-121.4996,38.5801]) // Sacremento
+       .setPopup(popupSac) 
+       .addTo(westbrookMap);
+
+        
+    // Marker - Golden State
+    var markerGs = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-122.3874,37.7678]) // Golden State
+      .setPopup(popupGs) 
+      .addTo(westbrookMap);
+         
+         // Marker - Los Angeles L
+    var markerLal = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-118.2672,34.0431]) // Los Angeles L
+      .setPopup(popupLal) 
+      .addTo(westbrookMap);
+         
+         // Marker - Los Angeles C
+    var markerLac = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-118.3421,33.9438]) // Los Angeles C
+      .setPopup(popupLac) 
+      .addTo(westbrookMap);
+         
+          // Marker - Phoenix
+    var markerPho = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-112.0712,33.4458]) // Phoenix
+      .setPopup(popupPho) 
+      .addTo(westbrookMap);
+         
+         // Marker - Utah
+    var markerUtah = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-111.9012,40.7683]) // Utah
+      .setPopup(popupUtah) 
+      .addTo(westbrookMap);
+         
+         // Marker - Denver
+    var markerDen = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-105.0076,39.7487]) // Denver
+      .setPopup(popupDen) 
+      .addTo(westbrookMap);
+         
+         // Marker - Oklahoma City
+    var markerOkc = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-97.5152,35.4635]) // Oklahoma City
+      .setPopup(popupOkc) 
+      .addTo(westbrookMap);
+
+         // Marker - Dallas
+    var markerDal = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-96.8099,32.7902]) // Dallas
+      .setPopup(popupDal) 
+      .addTo(westbrookMap);
+         
+          // Marker - San Antonio
+    var markerSas = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-98.4374,29.4270]) // San Antonio
+      .setPopup(popupSas) 
+      .addTo(westbrookMap);
+         
+          // Marker - Houston
+    var markerHou = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-95.3621,29.7509]) // Houston
+      .setPopup(popupHou) 
+      .addTo(westbrookMap);
+         
+          // Marker - New Orleans
+    var markerNop = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-90.0818,29.9490]) // New Orleans
+      .setPopup(popupNop) 
+      .addTo(westbrookMap);
+         
+         // Marker - Memphis
+    var markerMem = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-90.0505,35.1382]) // Memphis
+      .setPopup(popupMem) 
+      .addTo(westbrookMap);
+         
+         // Marker - Minnesota
+    var markerMin = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-93.2760,44.9795]) // Minnesota
+      .setPopup(popupMin) 
+      .addTo(westbrookMap);
+         
+         // Marker - Milwaukee
+    var markerMil = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-87.9173,43.0450]) // Milwaukee
+      .setPopup(popupMil) 
+      .addTo(westbrookMap);
+         
+         // Marker - Chicago
+    var markerChi = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-87.6742,41.8805]) // Chicago
+      .setPopup(popupChi) 
+      .addTo(westbrookMap);
+         
+         // Marker - Indiana
+    var markerInd = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-86.1555,39.7640]) // Indiana
+      .setPopup(popupInd) 
+      .addTo(westbrookMap);
+         
+         // Marker - Detroit
+    var markerDet = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-83.0551,42.3411]) // Detroit
+      .setPopup(popupDet) 
+      .addTo(westbrookMap);
+         
+         // Marker - Cleveland
+    var markerCle = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-81.6882,41.4968]) // Cleveland
+      .setPopup(popupCle) 
+      .addTo(westbrookMap);
+         
+         // Marker - Toronto
+    var markerTor = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-79.3790,43.6434]) // Toronto
+      .setPopup(popupTor) 
+      .addTo(westbrookMap);
+         
+         // Marker - Boston
+    var markerBos = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-71.0622,42.3663]) // Boston
+      .setPopup(popupBos) 
+      .addTo(westbrookMap);
+         
+         // Marker - New York
+    var markerNyk = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-73.9934,40.7506]) // New York
+      .setPopup(popupNyk) 
+      .addTo(westbrookMap);
+         
+         // Marker - Brooklyn
+    var markerBrn = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-73.9752,40.6827]) // Brooklyn
+      .setPopup(popupBrn) 
+      .addTo(westbrookMap);
+         
+         // Marker - Philadelphia
+    var markerPhi = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-75.1720,39.9010]) // Philadelphia
+      .setPopup(popupPhi) 
+      .addTo(westbrookMap);
+         
+         // Marker - Washington
+    var markerWas = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-77.0209,38.8981]) // Washington
+      .setPopup(popupWas) 
+      .addTo(westbrookMap);
+         
+         // Marker - Charlotte
+    var markerCha = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-80.8393,35.2251]) // Charlotte
+      .setPopup(popupCha) 
+      .addTo(westbrookMap);
+         
+         // Marker - Atlanta
+    var markerAtl = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-84.3964,33.7574]) // Atlanta
+      .setPopup(popupAtl) 
+      .addTo(westbrookMap);
+         
+         // Marker - Orlando
+    var markerOrl = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-81.3838,28.5393]) // Orlando
+      .setPopup(popupOrl) 
+      .addTo(westbrookMap);
+         
+         // Marker - Miami
+    var markerMia = new mapboxgl.Marker({color:'DarkRed'})
+      .setLngLat([-80.1879,25.7814]) // Miami
+      .setPopup(popupMia) 
+      .addTo(westbrookMap);
+        /***  END MARKERS Westbrook  ***/
+
+     </script>
+
+     </body>
+ </html>
