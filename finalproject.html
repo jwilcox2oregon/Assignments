@@ -24,9 +24,10 @@
           }
           
           #title { z-index: 9999; 
-         background-color:gray; 
+         background-color: rgba(80, 80, 80, .75); 
          opacity: 80%; 
-         text-align: center 
+         text-align: center;
+             color: white;
      }
 		 
       .map {
@@ -132,10 +133,10 @@
         <div class="rankingPanel" id="rankingPanel" style="height: 150px;">
         <h4>THE RECORD LIST</h4>
         <p style="margin-left: 10px; margin-right: 10px;">
-          1- Russell Westbrook (199)<br />
+            1- <span class="westbrook"><strong>Russell Westbrook (199)</strong></span><br />
             2- Oscar Robertson (181)<br />
             3- Magic Johnson (138)<br />
-            4- Nikola Jokic (130)<br />
+            4- <span class="jokic"><strong>Nikola Jokic (130)</strong></span><br />
             5- Lebron James (112)
             </p>
         </div>
@@ -174,8 +175,8 @@
      
      <!--  Title div here -->
       <div id='title'>
-     		<h1>Triple-doubles by location</h1>
-          <h2><span class="jokic">Nikola Jokic</span> and <span class="westbrook">Russell Westbrook</span></h2>
+     		<h1>NBA Triple-doubles by location</h1>
+          <h2><span class="jokic">Nikola Jokic</span> chasing <span class="westbrook">Russell Westbrook&#39;s</span> record</h2>
  	</div>
 
      <script>
@@ -190,7 +191,7 @@
          
                  
          westbrookMap.on('load', function() {
-           // the rest of the owner data code will go in here
+           // links and styles the points for the westbrook map
             westbrookMap.addLayer({
                 id: 'Westbrook Data',
                 type: "circle",
@@ -198,7 +199,7 @@
                     type: 'vector',
                     url: 'mapbox://jwilcox2oregon.clwjkrw256p9y1nnu0nsxk10n-0tny4'  //input your tileset ID url 
                   },
-                    'source-layer': 'nbacities', //input your source layer name e.g. 'Owner-Renter-Pop-ca08iw'
+                    'source-layer': 'nbacities', //input the source layer name
                   paint: {
                     'circle-color': 'red',
                   }
@@ -214,15 +215,15 @@
         });     
         
          jokicMap.on('load', function() {
-           // the rest of the owner data code will go in here
+           // links and styles the points for the jokic map
             jokicMap.addLayer({
             id: 'Jokic Data',
             type: "circle",
               source: {
                 type: 'vector',
-                url: 'mapbox://jwilcox2oregon.clwjkrw256p9y1nnu0nsxk10n-0tny4'  //input your tileset ID url e.g. 'mapbox://jomerson.6ykhlovc' 
+                url: 'mapbox://jwilcox2oregon.clwjkrw256p9y1nnu0nsxk10n-0tny4'  //input the tileset ID 
               },
-                'source-layer': 'nbacities', //input your source layer name e.g. 'Owner-Renter-Pop-ca08iw'
+                'source-layer': 'nbacities', //input the source layer name
               paint: {
                 'circle-color': 'yellow',
               }
@@ -251,7 +252,7 @@
           document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-up";
           state.panelOpen = false;
         } else {
-          document.getElementById('descriptionPanel').style.height = '250px';
+          document.getElementById('descriptionPanel').style.height = '325px';
           document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-down";
           state.panelOpen = true;
         }
@@ -262,7 +263,6 @@
  var popupPorj_content = '<h3>Portland Trailblazers</h3>';
 popupPorj_content += 'Triple-doubles at Portland: 1<br>';
          popupPorj_content += 'Current arena: Moda Center<br>';
-        popupPorj_content += 'Neato fact or vid or pic';
         
  var popupPorj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPorj_content);
@@ -271,7 +271,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupSacj_content = '<h3>Sacremento Kings</h3>';
         popupSacj_content += 'Triple-doubles at Sacremento: 2<br>';
         popupSacj_content += 'Current arena: Golden 1 Center<br>';
-         popupSacj_content += 'Neato fact or vid or pic';
                  
  var popupSacj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupSacj_content);
@@ -281,7 +280,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupGsj_content = '<h3>Golden State Warriors</h3>';
         popupGsj_content += 'Triple-doubles at Golden State: 3<br>';
           popupGsj_content += 'Current arena: Chase Center<br>';
-        popupGsj_content += 'Neato fact or vid or pic';
          
  var popupGsj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupGsj_content);
@@ -290,7 +288,7 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupLalj_content = '<h3>Los Angeles Lakers</h3>';
         popupLalj_content += 'Triple-doubles at Lakers: 0<br>';
          popupLalj_content += 'Current arena: Crypto.com Arena<br>';
-        popupLalj_content += 'One of only 6 visiting locations Nikola Jokic has not recorded a triple-double';
+        popupLalj_content += 'One of only 6 visiting locations where Nikola Jokic has not recorded a triple-double';
          
  var popupLalj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupLalj_content);
@@ -299,7 +297,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupLacj_content = '<h3>Los Angeles Clippers</h3>';
         popupLacj_content += 'Triple-doubles at Clippers: 3<br>';
          popupLacj_content += 'Current arena: Intuit Dome<br>';
-        popupLacj_content += 'Neato fact or vid or pic';
          
  var popupLacj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupLacj_content);
@@ -308,7 +305,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupPhoj_content = '<h3>Phoenix Suns</h3>';
         popupPhoj_content += 'Triple-doubles at Phoenix: 1<br>';
          popupPhoj_content += 'Current arena: Footprint Center<br>';
-        popupPhoj_content += 'Neato fact or vid or pic';
          
  var popupPhoj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPhoj_content);
@@ -317,7 +313,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupUtahj_content = '<h3>Utah Jazz</h3>';
         popupUtahj_content += 'Triple-doubles at Utah: 1<br>';
          popupUtahj_content += 'Current arena: Delta Center<br>';
-        popupUtahj_content += 'Neato fact or vid or pic';
          
  var popupUtahj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupUtahj_content);
@@ -353,7 +348,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupSasj_content = '<h3>San Antonio Spurs</h3>';
         popupSasj_content += 'Triple-doubles at San Antonio: 2<br>';
          popupSasj_content += 'Current arena: Frost Bank Center<br>';
-        popupSasj_content += 'Neato fact or vid or pic';
          
  var popupSasj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupSasj_content);
@@ -371,7 +365,7 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupNopj_content = '<h3>New Orleans Pelicans</h3>';
         popupNopj_content += 'Triple-doubles at New Orleans: 5<br>';
          popupNopj_content += 'Current arena: Smoothie King Center<br>';
-        popupNopj_content += 'Against New Orleans is the most Nikola Jokic has as an away player';
+        popupNopj_content += 'Against New Orleans is the most triple-doubles Nikola Jokic has as an away player.';
          
  var popupNopj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupNopj_content);
@@ -389,7 +383,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupMinj_content = '<h3>Minnesota Timberwolves</h3>';
         popupMinj_content += 'Triple-doubles at Minnesota: 2<br>';
          popupMinj_content += 'Current arena: Target Center<br>';
-        popupMinj_content += 'Neato fact or vid or pic';
          
  var popupMinj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMinj_content);
@@ -398,7 +391,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupMilj_content = '<h3>Milwaukee Bucks</h3>';
         popupMilj_content += 'Triple-doubles at Milwaukee: 3<br>';
          popupMilj_content += 'Current arena: Fiserv Forum<br>';
-        popupMilj_content += 'Neato fact or vid or pic';
          
  var popupMilj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMilj_content);
@@ -407,7 +399,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupChij_content = '<h3>Chicago Bulls</h3>';
         popupChij_content += 'Triple-doubles at Chicago: 2<br>';
          popupChij_content += 'Current arena: United Center<br>';
-        popupChij_content += 'Neato fact or vid or pic';
          
  var popupChij = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupChij_content);
@@ -416,7 +407,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupIndj_content = '<h3>Indiana Pacers</h3>';
         popupIndj_content += 'Triple-doubles at Indiana: 1<br>';
          popupIndj_content += 'Current arena: Gainbridge Fieldhouse<br>';
-        popupIndj_content += 'Neato fact or vid or pic';
          
  var popupIndj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupIndj_content);
@@ -425,7 +415,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupDetj_content = '<h3>Detroit Pistons</h3>';
         popupDetj_content += 'Triple-doubles at Detroit: 2<br>';
          popupDetj_content += 'Current arena: Little Caesars Arena<br>';
-        popupDetj_content += 'Neato fact or vid or pic';
          
  var popupDetj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupDetj_content);
@@ -434,7 +423,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupClej_content = '<h3>Cleveland Cavaliers</h3>';
         popupClej_content += 'Triple-doubles at Cleveland: 2<br>';
          popupClej_content += 'Current arena: Rocket Mortgage FieldHouse<br>';
-        popupClej_content += 'Neato fact or vid or pic';
          
  var popupClej = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupClej_content);
@@ -443,7 +431,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupTorj_content = '<h3>Toronto Raptors</h3>';
         popupTorj_content += 'Triple-doubles at Toronto: 1<br>';
          popupTorj_content += 'Current arena: Scotiabank Arena<br>';
-        popupTorj_content += 'Neato fact or vid or pic';
          
  var popupTorj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupTorj_content);
@@ -452,7 +439,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupBosj_content = '<h3>Boston Celtics</h3>';
         popupBosj_content += 'Triple-doubles at Boston: 1<br>';
          popupBosj_content += 'Current arena: TD Garden<br>';
-        popupBosj_content += 'Neato fact or vid or pic';
          
  var popupBosj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupBosj_content);
@@ -470,7 +456,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupBrnj_content = '<h3>Brooklyn Nets</h3>';
         popupBrnj_content += 'Triple-doubles at Brooklyn: 2<br>';
          popupBrnj_content += 'Current arena: Barclays Arena<br>';
-        popupBrnj_content += 'Neato fact or vid or pic';
          
  var popupBrnj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupBrnj_content);
@@ -479,7 +464,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupPhij_content = '<h3>Philadelphia 76ers</h3>';
         popupPhij_content += 'Triple-doubles at Philadelphia: 1<br>';
          popupPhij_content += 'Current arena: Wells Fargo Center<br>';
-        popupPhij_content += 'Neato fact or vid or pic';
          
  var popupPhij = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPhij_content);
@@ -497,7 +481,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupChaj_content = '<h3>Charlotte Hornets</h3>';
         popupChaj_content += 'Triple-doubles at Charlotte: 3<br>';
          popupChaj_content += 'Current arena: Specturm Center<br>';
-        popupChaj_content += 'Neato fact or vid or pic';
          
  var popupChaj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupChaj_content);
@@ -515,7 +498,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupOrlj_content = '<h3>Orlando Magic</h3>';
         popupOrlj_content += 'Triple-doubles at Orlando: 2<br>';
          popupOrlj_content += 'Current arena: Kia Center<br>';
-        popupOrlj_content += 'Neato fact or vid or pic';
          
  var popupOrlj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupOrlj_content);
@@ -524,7 +506,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupMiaj_content = '<h3>Miami Heat</h3>';
         popupMiaj_content += 'Triple-doubles at Miami: 1<br>';
          popupMiaj_content += 'Current arena: Kaseya Center<br>';
-        popupMiaj_content += 'Neato fact or vid or pic';
          
  var popupMiaj = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMiaj_content);
@@ -535,7 +516,6 @@ popupPorj_content += 'Triple-doubles at Portland: 1<br>';
  var popupPor_content = '<h3>Portland Trailblazers</h3>';
 popupPor_content += 'Triple-doubles at Portland: 3<br>';
          popupPor_content += 'Current arena: Moda Center<br>';
-        popupPor_content += 'Neato fact or vid or pic';
         
  var popupPor = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPor_content);
@@ -544,7 +524,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupSac_content = '<h3>Sacremento Kings</h3>';
         popupSac_content += 'Triple-doubles at Sacremento: 5<br>';
         popupSac_content += 'Current arena: Golden 1 Center<br>';
-         popupSac_content += 'Neato fact or vid or pic';
                  
  var popupSac = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupSac_content);
@@ -554,7 +533,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupGs_content = '<h3>Golden State Warriors</h3>';
         popupGs_content += 'Triple-doubles at Golden State: 3<br>';
           popupGs_content += 'Current arena: Chase Center<br>';
-        popupGs_content += 'Neato fact or vid or pic';
          
  var popupGs = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupGs_content);
@@ -564,7 +542,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
         popupLal_content += 'Triple-doubles at Lakers: 1<br>';
           popupLal_content += 'Triple-doubles for Lakers: 7<br>';
          popupLal_content += 'Current arena: Crypto.com Arena<br>';
-        popupLal_content += 'Neato fact or vid or pic';
          
  var popupLal = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupLal_content);
@@ -574,7 +551,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
         popupLac_content += 'Triple-doubles at Clippers: 1<br>';
          popupLac_content += 'Triple-doubles for Clippers: 0<br>';
          popupLac_content += 'Current arena: Intuit Dome<br>';
-        popupLac_content += 'Neato fact or vid or pic';
          
  var popupLac = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupLac_content);
@@ -583,7 +559,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupPho_content = '<h3>Phoenix Suns</h3>';
         popupPho_content += 'Triple-doubles at Phoenix: 4<br>';
          popupPho_content += 'Current arena: Footprint Center<br>';
-        popupPho_content += 'Neato fact or vid or pic';
          
  var popupPho = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPho_content);
@@ -592,7 +567,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupUtah_content = '<h3>Utah Jazz</h3>';
         popupUtah_content += 'Triple-doubles at Utah: 3<br>';
          popupUtah_content += 'Current arena: Delta Center<br>';
-        popupUtah_content += 'Neato fact or vid or pic';
          
  var popupUtah = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupUtah_content);
@@ -601,7 +575,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupDen_content = '<h3>Denver Nuggets</h3>';
         popupDen_content += 'Triple-doubles at Denver: 4<br>';
          popupDen_content += 'Current arena: Ball Arena<br>';
-        popupDen_content += 'Neato fact or vid or pic';
          
  var popupDen = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupDen_content);
@@ -620,7 +593,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupDal_content = '<h3>Dallas Mavericks</h3>';
         popupDal_content += 'Triple-doubles at Dallas: 1<br>';
          popupDal_content += 'Current arena: American Airlines Center<br>';
-        popupDal_content += 'Neato fact or vid or pic';
          
  var popupDal = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupDal_content);
@@ -629,7 +601,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupSas_content = '<h3>San Antonio Spurs</h3>';
         popupSas_content += 'Triple-doubles at San Antonio: 2<br>';
          popupSas_content += 'Current arena: Frost Bank Center<br>';
-        popupSas_content += 'Neato fact or vid or pic';
          
  var popupSas = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupSas_content);
@@ -639,7 +610,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
         popupHou_content += 'Triple-doubles at Houston: 3<br>';
          popupHou_content += 'Triple-doubles for Houston: 5<br>';
          popupHou_content += 'Current arena: Toyota Center<br>';
-        popupHou_content += 'Neato fact or vid or pic';
          
  var popupHou = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupHou_content);
@@ -648,7 +618,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupNop_content = '<h3>New Orleans Pelicans</h3>';
         popupNop_content += 'Triple-doubles at New Orleans: 3<br>';
          popupNop_content += 'Current arena: Smoothie King Center<br>';
-        popupNop_content += 'Neato fact or vid or pic';
          
  var popupNop = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupNop_content);
@@ -657,7 +626,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupMem_content = '<h3>Memphis Grizzlies</h3>';
         popupMem_content += 'Triple-doubles at Memphis: 3<br>';
          popupMem_content += 'Current arena: FedEx Forum<br>';
-        popupMem_content += 'Neato fact or vid or pic';
          
  var popupMem = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMem_content);
@@ -666,7 +634,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupMin_content = '<h3>Minnesota Timberwolves</h3>';
         popupMin_content += 'Triple-doubles at Minnesota: 3<br>';
          popupMin_content += 'Current arena: Target Center<br>';
-        popupMin_content += 'Neato fact or vid or pic';
          
  var popupMin = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMin_content);
@@ -675,7 +642,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupMil_content = '<h3>Milwaukee Bucks</h3>';
         popupMil_content += 'Triple-doubles at Milwaukee: 5<br>';
          popupMil_content += 'Current arena: Fiserv Forum<br>';
-        popupMil_content += 'Neato fact or vid or pic';
          
  var popupMil = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMil_content);
@@ -684,7 +650,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupChi_content = '<h3>Chicago Bulls</h3>';
         popupChi_content += 'Triple-doubles at Chicago: 2<br>';
          popupChi_content += 'Current arena: United Center<br>';
-        popupChi_content += 'Neato fact or vid or pic';
          
  var popupChi = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupChi_content);
@@ -693,7 +658,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupInd_content = '<h3>Indiana Pacers</h3>';
         popupInd_content += 'Triple-doubles at Indiana: 4<br>';
          popupInd_content += 'Current arena: Gainbridge Fieldhouse<br>';
-        popupInd_content += 'Neato fact or vid or pic';
          
  var popupInd = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupInd_content);
@@ -702,7 +666,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupDet_content = '<h3>Detroit Pistons</h3>';
         popupDet_content += 'Triple-doubles at Detroit: 2<br>';
          popupDet_content += 'Current arena: Little Caesars Arena<br>';
-        popupDet_content += 'Neato fact or vid or pic';
          
  var popupDet = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupDet_content);
@@ -711,7 +674,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupCle_content = '<h3>Cleveland Cavaliers</h3>';
         popupCle_content += 'Triple-doubles at Cleveland: 2<br>';
          popupCle_content += 'Current arena: Rocket Mortgage FieldHouse<br>';
-        popupCle_content += 'Neato fact or vid or pic';
          
  var popupCle = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupCle_content);
@@ -729,7 +691,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupBos_content = '<h3>Boston Celtics</h3>';
         popupBos_content += 'Triple-doubles at Boston: 2<br>';
          popupBos_content += 'Current arena: TD Garden<br>';
-        popupBos_content += 'Neato fact or vid or pic';
          
  var popupBos = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupBos_content);
@@ -738,7 +699,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupNyk_content = '<h3>New York Knicks</h3>';
         popupNyk_content += 'Triple-doubles at New York: 3<br>';
          popupNyk_content += 'Current arena: Madison Square Garden<br>';
-        popupNyk_content += 'Neato fact or vid or pic';
          
  var popupNyk = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupNyk_content);
@@ -747,7 +707,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupBrn_content = '<h3>Brooklyn Nets</h3>';
         popupBrn_content += 'Triple-doubles at Brooklyn: 3<br>';
          popupBrn_content += 'Current arena: Barclays Arena<br>';
-        popupBrn_content += 'Neato fact or vid or pic';
          
  var popupBrn = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupBrn_content);
@@ -756,7 +715,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupPhi_content = '<h3>Philadelphia 76ers</h3>';
         popupPhi_content += 'Triple-doubles at Philadelphia: 4<br>';
          popupPhi_content += 'Current arena: Wells Fargo Center<br>';
-        popupPhi_content += 'Neato fact or vid or pic';
          
  var popupPhi = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupPhi_content);
@@ -766,7 +724,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
         popupWas_content += 'Triple-doubles at Washington: 2<br>';
          popupWas_content += 'Triple-doubles for Washington: 21<br>';
          popupWas_content += 'Current arena: Capital One Arena<br>';
-        popupWas_content += 'Neato fact or vid or pic';
          
  var popupWas = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupWas_content);
@@ -795,7 +752,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupOrl_content = '<h3>Orlando Magic</h3>';
         popupOrl_content += 'Triple-doubles at Orlando: 4<br>';
          popupOrl_content += 'Current arena: Kia Center<br>';
-        popupOrl_content += 'Neato fact or vid or pic';
          
  var popupOrl = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupOrl_content);
@@ -804,7 +760,6 @@ popupPor_content += 'Triple-doubles at Portland: 3<br>';
  var popupMia_content = '<h3>Miami Heat</h3>';
         popupMia_content += 'Triple-doubles at Miami: 3<br>';
          popupMia_content += 'Current arena: Kaseya Center<br>';
-        popupMia_content += 'Neato fact or vid or pic';
          
  var popupMia = new mapboxgl.Popup({ minWidth:'300px' })
      .setHTML(popupMia_content);
